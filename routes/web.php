@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,8 +16,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth/login');
 });
+// Route::view('/auth', 'auth.register')->name('users.index');
+// Route::view('/users', 'users.index')->name('users.index');
+Route::view('/apartments', 'apartments.index')->name('apartments.index');
+Route::view('/apartments/create', 'apartments.create')->name('apartments.create');
+Route::view('/apartments/historic', 'apartments.historic')->name('apartments.historic');
+Route::view('/apartments/show', 'apartments.show')->name('apartments.show');
+// Route::view('/users/create', 'users.create')->name('users.create');
+Route::resource('/users',"App\Http\Controllers\UserController");
 
 Auth::routes();
 
