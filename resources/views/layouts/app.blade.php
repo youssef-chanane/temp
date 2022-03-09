@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 
-  <title>OneUI - Bootstrap 5 Admin Template &amp; UI Framework</title>
+  <title>Temperature</title>
 
   <meta name="description" content="OneUI - Bootstrap 5 Admin Template &amp; UI Framework created by pixelcave and published on Themeforest">
   <meta name="author" content="pixelcave">
@@ -137,7 +137,7 @@
           <span class="smini-visible">
             <i class="fa fa-circle-notch text-primary"></i>
           </span>
-          <span class="smini-hide fs-5 tracking-wider">One<span class="fw-normal">UI</span></span>
+          {{-- <span class="smini-hide fs-5 tracking-wider">One<span class="fw-normal">UI</span></span> --}}
         </a>
         <!-- END Logo -->
 
@@ -227,47 +227,39 @@
         <!-- Side Navigation -->
         <div class="content-side">
           <ul class="nav-main">
-            <li class="nav-main-item">
+            {{-- <li class="nav-main-item">
               <a class="nav-main-link{{ request()->is('dashboard') ? ' active' : '' }}" href="{{route('home')}}">
                 <i class="nav-main-link-icon si si-cursor"></i>
                 <span class="nav-main-link-name">Dashboard</span>
               </a>
-            </li>
+            </li> --}}
             @if(auth()->user()->role=="super admin" || auth()->user()->role=="admin")
             <li class="nav-main-item">
                 <a class="nav-main-link{{ request()->is('users.index') ? ' active' : '' }}" href="{{route('users.index')}}">
                   <i class="nav-main-link-icon si si-cursor"></i>
-                  <span class="nav-main-link-name">Liste des utilisateurs</span>
+                  <span class="nav-main-link-name">Utilisateurs</span>
                 </a>
             </li>
-            @endif
               <li class="nav-main-item">
-                <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="true" href="#">
+                <a class="nav-main-link" href="{{route('apartements.index')}}">
                   <i class="nav-main-link-icon si si-bulb"></i>
                   <span class="nav-main-link-name">Exploitation</span>
                 </a>
-                <ul class="nav-main-submenu">
-                @if(auth()->user()->role=="super admin" || auth()->user()->role=="admin")
-                  <li class="nav-main-item">
-                    <a class="nav-main-link" href="{{route('apartments.index')}}">
-                      <span class="nav-main-link-name">actuel</span>
-                    </a>
-                  </li>
+
+
                 @endif
-                @if(auth()->user()->role=="viewer")
-                  <li class="nav-main-item">
-                    <a class="nav-main-link" href="{{route('apartments.show')}}">
-                      <span class="nav-main-link-name">Actuel</span>
-                    </a>
-                  </li>
-                @endif
-                <li class="nav-main-item">
-                    <a class="nav-main-link" href="{{route('apartments.historic')}}">
-                      <span class="nav-main-link-name">Historique</span>
-                    </a>
-                  </li>
+
+
                 </ul>
               </li>
+              @if(auth()->user()->role=="viewer")
+                  <li class="nav-main-item">
+                    <a class="nav-main-link" href="{{route('apartements.show',auth()->user()->id)}}">
+                      <i class="nav-main-link-icon si si-bulb"></i>
+                      <span class="nav-main-link-name">Exploitation</span>
+                    </a>
+                  </li>
+                @endif
             {{-- <li class="nav-main-item open">
                 <form action="{{route('logout')}}" class="nav-main-link" method="post">
                  @csrf
@@ -287,6 +279,12 @@
 
     <!-- Main Container -->
     <main id="main-container" class="">
+                    {{-- success session --}}
+                    @if(session()->has('warning'))
+                    <div class="alert alert-danger">
+                        {{session()->get('warning')}}
+                    </div>
+                @endif
       @yield('content')
     </main>
     <!-- END Main Container -->
@@ -323,17 +321,17 @@
         <!-- User Dropdown -->
         <div class="dropdown d-inline-block ms-2">
           <button type="button" class="btn btn-sm btn-alt-secondary d-flex align-items-center" id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <img class="rounded-circle" src="{{ asset('media/avatars/avatar10.jpg') }}" alt="Header Avatar" style="width: 21px;">
+            {{-- <img class="rounded-circle" src="{{ asset('media/avatars/avatar10.jpg') }}" alt="Header Avatar" style="width: 21px;"> --}}
             <span class="d-none d-sm-inline-block ms-2">{{auth()->user()->name}}</span>
             <i class="fa fa-fw fa-angle-down d-none d-sm-inline-block ms-1 mt-1"></i>
           </button>
           <div class="dropdown-menu dropdown-menu-md dropdown-menu-end p-0 border-0" aria-labelledby="page-header-user-dropdown">
             <div class="p-3 text-center bg-body-light border-bottom rounded-top">
-              <img class="img-avatar img-avatar48 img-avatar-thumb" src="{{ asset('media/avatars/avatar10.jpg') }}" alt="">
+              {{-- <img class="img-avatar img-avatar48 img-avatar-thumb" src="{{ asset('media/avatars/avatar10.jpg') }}" alt=""> --}}
               <p class="mt-2 mb-0 fw-medium">{{auth()->user()->name}}</p>
-              <p class="mb-0 text-muted fs-sm fw-medium">Web Developer</p>
+              {{-- <p class="mb-0 text-muted fs-sm fw-medium">Web Developer</p> --}}
             </div>
-            <div class="p-2">
+            {{-- <div class="p-2">
               <a class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0)">
                 <span class="fs-sm fw-medium">Inbox</span>
                 <span class="badge rounded-pill bg-primary ms-2">3</span>
@@ -345,15 +343,15 @@
               <a class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0)">
                 <span class="fs-sm fw-medium">Settings</span>
               </a>
-            </div>
+            </div> --}}
             <div role="separator" class="dropdown-divider m-0"></div>
             <div class="p-2">
               <a class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0)">
-                <span class="fs-sm fw-medium">Lock Account</span>
+                <span class="fs-sm fw-medium">réglages</span>
               </a>
               <form class="dropdown-item d-flex align-items-center justify-content-between " action="{{route('logout')}}" method="post">
                 @csrf
-                <button class="btn btn-sm btn-alt-secondary d-flex align-items-center">Log Out</button>
+                <button class="btn btn-sm btn-alt-secondary d-flex align-items-center">Déconnecter</button>
               </form>
               {{-- <a class="dropdown-item d-flex align-items-center justify-content-between" href="{{route('logout')}}">
               </a> --}}
@@ -383,18 +381,18 @@
   </header>
   <!-- END Header -->
     <!-- Footer -->
-    <footer id="page-footer" class="bg-body-light">
+    {{-- <footer id="page-footer" class="bg-body-light">
       <div class="content py-3">
         <div class="row fs-sm">
           <div class="col-sm-6 order-sm-2 py-1 text-center text-sm-end">
             Crafted with <i class="fa fa-heart text-danger"></i> by <a class="fw-semibold" href="https://1.envato.market/ydb" target="_blank">pixelcave</a>
           </div>
           <div class="col-sm-6 order-sm-1 py-1 text-center text-sm-start">
-            <a class="fw-semibold" href="https://1.envato.market/AVD6j" target="_blank">OneUI</a> &copy; <span data-toggle="year-copy"></span>
+            <a class="fw-semibold" href="https://1.envato.market/AVD6j" target="_blank"></a> &copy; <span data-toggle="year-copy"></span>
           </div>
         </div>
       </div>
-    </footer>
+    </footer> --}}
     <!-- END Footer -->
   </div>
   <!-- END Page Container -->

@@ -24,19 +24,19 @@
       <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center py-2">
         <div class="flex-grow-1">
           <h1 class="h3 fw-bold mb-2">
-            DataTables Example
+            Liste des Appartements
           </h1>
-          <h2 class="fs-base lh-base fw-medium text-muted mb-0">
+          {{-- <h2 class="fs-base lh-base fw-medium text-muted mb-0">
             Plugin Integration
-          </h2>
+          </h2> --}}
         </div>
         <nav class="flex-shrink-0 mt-3 mt-sm-0 ms-sm-3" aria-label="breadcrumb">
           <ol class="breadcrumb breadcrumb-alt">
             <li class="breadcrumb-item">
-              <a class="link-fx" href="javascript:void(0)">Examples</a>
+              <a class="link-fx" href="javascript:void(0)">APPARTEMENTS</a>
             </li>
             <li class="breadcrumb-item" aria-current="page">
-              DataTables
+              list
             </li>
           </ol>
         </nav>
@@ -53,7 +53,7 @@
       <h3 class="block-title">Appartements</h3>
       <div class="block-options">
         <div class="block-options-item">
-                <a href="{{route('apartments.create')}}" class="btn btn-success">
+                <a href="{{route('apartements.create')}}" class="btn btn-success">
                     Ajouter Appartement
                 </a>
         </div>
@@ -70,7 +70,7 @@
             <th class="d-none d-sm-table-cell" style="width: 20%;">Date</th>
           </tr>
         </thead> --}}
-        @for($i=0;$i<5;$i++)
+        @foreach($apartements as $apartement)
         <tbody class="js-table-sections-header">
           <tr>
             <td class="text-center">
@@ -78,7 +78,8 @@
             </td>
             <td class="fw-semibold fs-sm">
               <div class="py-1">
-                <a href="">appartement {{$i}}</a>
+
+                <a href="">{{$apartement->apartementName}}</a>
               </div>
             </td>
             {{-- <td>
@@ -91,42 +92,74 @@
         </tbody>
 
         <tbody class="fs-sm">
-
-        @for ($j=0;$j<5;$j++)
+            <tr>
+                <th>id</th>
+                <th>chambre</th>
+                <th>Date </th>
+                <th style="text-align: center">°C</th>
+                <th>consign a</th>
+                <th>consign b</th>
+                <th>Fin manuel</th>
+                <th>percent %</th>
+                <th>compter</th>
+                <th>kwh</th>
+                <th>Regim</th>
+                <th>Puiss</th>
+                <th>diam</th>
+                <th>V.Pos</th>
+            </tr>
+        @foreach ($apartement->rooms as $room)
 
         <tr>
-            <td style="min-width: 15%">Chambre {{$j}}</td>
-            <td style="text-align: center">{{$i}}{{$j}}°C</td>
-            <td>consign a
-                <button  class="btn btn-sm btn-alt-secondary "  data-bs-toggle="modal" data-bs-target="#modal-block-small">
+            <td >{{$room->id}}</td>
+            <td style="min-width: 15%">{{$room->number_name}}</td>
+            <td>{{($room->temperature)?$room->temperature->Date_temperatures:""}}</td>
+            <td style="text-align: center"> {{($room->temperature)?$room->temperature->Temperature_Values:""}}°C</td>
+            <td>
+                {{($room->temperature)?$room->temperature->Consigne_A:""}}
+                @if($room->temperature)
+                <button  class="btn btn-sm btn-alt-secondary "  data-bs-toggle="modal" data-bs-target="#modal-block-small{{$room->temperature->id}}">
                     <i class="fa fa-fw fa-pencil-alt"></i>
                 </button>
+                @endif
             </td>
-            <td>consign b
-                <button  class="btn btn-sm btn-alt-secondary "  data-bs-toggle="modal" data-bs-target="#modal-block-small2">
+            <td>
+                {{($room->temperature)?$room->temperature->Consigne_B:""}}
+                @if($room->temperature)
+                <button  class="btn btn-sm btn-alt-secondary "  data-bs-toggle="modal" data-bs-target="#modal-block-small2{{$room->temperature->id}}">
                     <i class="fa fa-fw fa-pencil-alt"></i>
                 </button>
+                @endif
             </td>
-            <td>Fin manuel</td>
-            <td>percent %</td>
-            <td>compter</td>
-            <td>{{$i}}{{$j}}kwh</td>
-            <td>Regim</td>
-            <td>Puiss</td>
-            <td>diam</td>
-            <td>V.Pos</td>
+            <td>
+                {{($room->temperature)?$room->temperature->Fin_Manuel:""}}
+            </td>
+            <td>
+                {{($room->temperature)?$room->temperature->Percent:""}}
+            </td>
+            <td>
+                {{($room->temperature)?$room->temperature->Compter:""}}
+            </td>
+            <td>
+                {{($room->temperature)?$room->temperature->kWh:""}}
+            </td>
+            <td>
+                {{($room->temperature)?$room->temperature->Regim:""}}
+            </td>
+            <td>
+                {{($room->temperature)?$room->temperature->Puiss:""}}
+            </td>
+            <td>
+                {{($room->temperature)?$room->temperature->Diam:""}}
+            </td>
+            <td>
+                {{($room->temperature)?$room->temperature->V_Pos:""}}
+            </td>
         </tr>
-        @endfor
-
-        </tbody>
-        @endfor
-      </table>
-    </div>
-  </div>
-  <!-- END Table Sections -->
-  {{-- for consign 1 --}}
+          {{-- for consign 1 --}}
   <!-- Small Block Modal -->
-  <div class="modal" id="modal-block-small" tabindex="-1" role="dialog" aria-labelledby="modal-block-small" aria-hidden="true">
+  @if($room->temperature)
+  <div class="modal" id="modal-block-small{{$room->temperature->id}}" tabindex="-1" role="dialog" aria-labelledby="modal-block-small" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
       <div class="modal-content">
         <div class="block block-rounded block-transparent mb-0">
@@ -138,9 +171,11 @@
               </button>
             </div>
           </div>
-          <form action="">
+          <form action="{{route('apartements.updateconsigne',$room->temperature->id)}}" method="POST">
+            @csrf
+            @method('PUT')
               <div class="block-content fs-sm mb-4">
-                <textarea class="form-control " id="" name="" placeholder="Nouveau Consigne"></textarea>
+                <textarea class="form-control " id="" name="Consigne_A" placeholder="Nouveau Consigne">{{old('Consigne_A',isset($room->temperature->Consigne_A) ? $room->temperature->Consigne_A:'') ?? NULL}}</textarea>
               </div>
               <div class="block-content block-content-full text-end bg-body">
                 <button type="button" class="btn btn-sm btn-alt-secondary me-1" data-bs-dismiss="modal">Fermer</button>
@@ -154,7 +189,7 @@
   <!-- END Small Block Modal -->
   {{-- for consign 2 --}}
     <!-- Small Block Modal -->
-    <div class="modal" id="modal-block-small2" tabindex="-1" role="dialog" aria-labelledby="modal-block-small2" aria-hidden="true">
+    <div class="modal" id="modal-block-small2{{$room->temperature->id}}" tabindex="-1" role="dialog" aria-labelledby="modal-block-small2" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
           <div class="modal-content">
             <div class="block block-rounded block-transparent mb-0">
@@ -166,9 +201,11 @@
                   </button>
                 </div>
               </div>
-              <form action="">
+              <form action="{{route('apartements.updateconsigne',$room->temperature->id)}}" method="POST">
+                @csrf
+                @method('PUT')
                   <div class="block-content fs-sm mb-4">
-                    <textarea class="form-control " id="" name="" placeholder="Nouveau Consigne"></textarea>
+                    <textarea class="form-control " id="" name="Consigne_B"  placeholder="Nouveau Consigne">{{old('Consigne_B',isset($room->temperature->Consigne_B) ? $room->temperature->Consigne_B:'') ?? NULL}}</textarea>
                   </div>
                   <div class="block-content block-content-full text-end bg-body">
                     <button type="button" class="btn btn-sm btn-alt-secondary me-1" data-bs-dismiss="modal">Fermer</button>
@@ -179,7 +216,17 @@
           </div>
         </div>
       </div>
+      @endif
       <!-- END Small Block Modal -->
+        @endforeach
+
+        </tbody>
+        @endforeach
+      </table>
+    </div>
+  </div>
+  <!-- END Table Sections -->
+
 
   </div>
   <!-- END Page Content -->

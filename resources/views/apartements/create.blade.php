@@ -49,19 +49,12 @@
 </script>
 <script>
 
-    const role =document.querySelector("#role");
-    const oneapp = document.querySelector("#oneapp");
+
     $(function(){
-        $("#role").change(
+        $("select").change(
             function(){
                 console.log($(this).val());
-                if($(this).val()=="viewer"){
-                    $("#oneapp").removeClass("d-none");
-                    $("#plusapp").addClass("d-none");
-                }else{
-                    $("#oneapp").addClass("d-none");
-                    $("#plusapp").removeClass("d-none");
-                }
+
             }
         );
 
@@ -83,68 +76,75 @@
     <div class="content ">
             <div class="block block-rounded">
               <div class="block-header block-header-default">
-                <h3 class="block-title">Ajouter Une appartement</h3>
+                <h3 class="block-title">Ajout d 'un appartement</h3>
               </div>
               <div class="block-content">
-                <form class="row g-3" novalidate onsubmit="return false;">
+                <form class="row g-3" action="{{route('apartements.store')}}" method="POST">
                   @csrf
                   <div class="col-12 col-lg-6 ">
                     <div class="mb-1">
-                      <input type="text" class="form-control" id="" name="val-username" placeholder="nom de l'appartement" required>
+                      <input type="text" class="form-control" value="{{old('apartementName') ?? NULL}}" name="apartementName" placeholder="nom de l'appartement">
 
                     </div>
                   </div>
                   <div  class="col-12 col-lg-6">
                       <div>
                         <div class="mb-1">
-                            <select class="js-select2 form-select" id="" name="example-select2-multiple" style="width: 100%;" data-placeholder="les piéces de l'appartement.." multiple>
+                            <select class="js-select2 form-select" multiple="multiple" id="" name="number_name[]" style="width: 100%;" data-placeholder="les piéces de l'appartement.." multiple>
                             <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
-                            @for($i=0;$i<5;$i++)
-                              <option value="{{$i}}">Chambre {{$i}}</option>
+                            <option value="cuisine" selected>Cuisine</option>
+                            <option value="salon" selected>Salon</option>
+                            {{-- <option value="Garde-manger">Garde manger</option> --}}
+                            <option value="Salle-a-manger">Salle à manger</option>
+                            <option value="Salle-de-réception">Salle de réception</option>
+                            @for($i=1;$i<7;$i++)
+                              <option value="chambre{{$i}}">Chambre {{$i}}</option>
                             @endfor
                           </select>
                         </div>
                       </div>
                     </div>
                     <div class="col-12 col-lg-6 mb-1">
-                        <input type="text" class="form-control mb-1" id="" name="" placeholder="Nom de l'entreprise">
-                    </div>
-                    <div class="col-12 col-lg-6 mb-1">
-                        <textarea class="form-control" id="" name="" rows="4" placeholder="Adresse.."></textarea>
-                    </div>
-                    <div class="col-12 col-lg-6 mb-1">
-                        <input type="text" class="form-control" id="" name="" placeholder="Code postale">
+                        <input type="text" class="form-control mb-4" value="{{old('company') ?? NULL}}" name="company" placeholder="Nom de l'entreprise">
+                        <input type="text" class="form-control" value="{{old('state') ?? NULL}}" name="state" placeholder="state">
 
                     </div>
                     <div class="col-12 col-lg-6 mb-1">
-                        <input type="text" class="form-control" id="" name="" placeholder="state">
+                        <textarea class="form-control"  name="adress" rows="4" placeholder="Adresse..">{{old('adress') ?? NULL}}</textarea>
+                    </div>
+                    <div class="col-12 col-lg-6 mb-1">
+                        <input type="text" class="form-control" value="{{old('poste') ?? NULL}}" name="poste" placeholder="Code postale">
+
+                    </div>
+                    <div class="col-12 col-lg-6 mb-1">
+                        <input type="text" class="form-control" id="ipBox" value="{{old('ipBox') ?? NULL}}" name="ipBox" placeholder="ip box">
                     </div>
 
                     <div class="col-12 col-lg-6 mb-1">
-                        <input type="text" class="form-control" id="" name="" placeholder="Tel ">
+                        <input type="text" class="form-control"  name="tel" value="{{old('tel') ?? NULL}}" placeholder="Tel ">
                     </div>
 
                     <div class="col-12 col-lg-6 mb-1">
-                        <input type="text" class="form-control" id="" name="" placeholder="Tel 2">
+                        <input type="text" class="form-control"  name="tel1" value="{{old('tel1') ?? NULL}}" placeholder="Tel 2">
                     </div>
 
                     <div class="col-12 col-lg-6 mb-1">
-                        <input type="text" class="form-control" id="" name="" placeholder="Map Logitude">
+                        <input type="text" class="form-control"  name="logitude" value="{{old('logitude') ?? NULL}}" placeholder="Map Logitude">
                     </div>
 
                     <div class="col-12 col-lg-6 mb-1">
-                        <input type="text" class="form-control" id="" name="" placeholder="Map Latitude">
+                        <input type="text" class="form-control"  name="latitude" value="{{old('latitude') ?? NULL}}" placeholder="Map Latitude">
                     </div>
                   <div  class="col-12 col-lg-6">
                       <h2 class="content-heading border-bottom  p-0">Choisir le viewer de l'appartement</h2>
 
                         <div >
                           <div class="mb-1">
-                            <select class="js-select2 form-select" id="example-select2" name="example-select2" style="width: 100%;" data-placeholder="Choisir une..">
+                            <select class="js-select2 form-select" id="example-select2" name="viewer" style="width: 100%;" data-placeholder="Choisir une..">
                               <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
-                              @for($i=0;$i<5;$i++)
-                                <option value="{{$i}}">Viewer {{$i}}</option>
-                              @endfor
+                                @foreach ( $viewers as $viewer)
+                                    <option value="{{$viewer->id}}">{{$viewer->name}}</option>
+                                @endforeach
                             </select>
                           </div>
                         </div>
@@ -154,45 +154,57 @@
 
                     <div>
                       <div class="mb-1">
-                        <select class="js-select2 form-select" id="" name="example-select2-multiple" style="width: 100%;" data-placeholder="choisir plusieur.." multiple>
+                        <select class="js-select2 form-select" id="" name="technicien[]" multiple="multiple" style="width: 100%;" data-placeholder="choisir plusieur.." multiple>
                           <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
-                          @for($i=0;$i<5;$i++)
-                            <option value="{{$i}}">Technicien {{$i}}</option>
-                          @endfor
+                          @foreach($techniciens as $technicien)
+                            <option value="{{$technicien->id}}">{{$technicien->name}}</option>
+                          @endforeach
                         </select>
                       </div>
                     </div>
                   </div>
                   {{-- ce champ sera visible sauf si l'utilisateur et superadmin --}}
+                @if(auth()->user()->role=="super admin" || auth()->user()->role=="super-admin")
                   <div class="col-12 col-lg-6 ">
                     <h2 class="content-heading border-bottom p-0">Choisir l'admin de l'appartement </h2>
 
                       <div >
                         <div class="mb-1">
-                          <select class="js-select2 form-select" id="" name="example-select2" style="width: 100%;" data-placeholder="Choisir une..">
+                          <select class="js-select2 form-select" id="" name="admin" style="width: 100%;" data-placeholder="Choisir une..">
                             <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
-                            @for($i=0;$i<5;$i++)
-                              <option value="{{$i}}">Admin {{$i}}</option>
-                            @endfor
+                            @foreach ( $admins as $admin)
+                                <option value="{{$admin->id}}">{{$admin->name}}</option>
+                            @endforeach
                           </select>
                         </div>
                       </div>
                 </div>
+                @endif
                 <div class="col-12 col-lg-6 ">
                     <h2 class="content-heading border-bottom p-0">Choisir le manager de l'appartement </h2>
                       <div >
                         <div class="mb-1">
-                          <select class="js-select2 form-select" id="" name="example-select2" style="width: 100%;" data-placeholder="Choisir une..">
+                          <select class="js-select2 form-select" id="" name="manager" style="width: 100%;" data-placeholder="Choisir une..">
                             <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
-                            @for($i=0;$i<5;$i++)
-                              <option value="{{$i}}">Manager {{$i}}</option>
-                            @endfor
+                            @foreach ( $managers as $manager)
+                                <option value="{{$manager->id}}">{{$manager->name}}</option>
+                            @endforeach
                           </select>
                         </div>
                       </div>
                 </div>
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                       <ul>
+                           @foreach($errors->all() as $error)
+                           <li class="list-group-item text-danger">{{$error}}</li>
+                           @endforeach
+                       </ul>
+                    </div>
+                @endif
                   <div class="col-12 mb-2">
                     <button class="btn btn-primary" type="submit">Enregistrer</button>
+                    <a href="{{route('apartements.index')}}" class="btn btn-light" >Cancel</a>
                   </div>
                 </form>
               </div>

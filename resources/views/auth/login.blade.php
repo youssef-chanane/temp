@@ -15,16 +15,15 @@
             <div class="p-4 p-xl-5 flex-grow-1 d-flex align-items-center">
               <div class="w-100">
                 <a class="link-fx fw-semibold fs-2 text-white" href="">
-                  One<span class="fw-normal">UI</span>
+                  {{-- One<span class="fw-normal">UI</span> --}}
                 </a>
                 <p class="text-white-75 me-xl-8 mt-2">
-                  Welcome to your amazing app. Feel free to login and start managing your projects and clients.
-                </p>
+                    Bienvenue dans votre incroyable application.                </p>
               </div>
             </div>
             <div class="p-4 p-xl-5 d-xl-flex justify-content-between align-items-center fs-sm">
               <p class="fw-medium text-white-50 mb-0">
-                <strong>OneUI 5.1</strong> &copy; <span data-toggle="year-copy"></span>
+                {{-- <strong>OneUI 5.1</strong> &copy; <span data-toggle="year-copy"></span> --}}
               </p>
               <ul class="list list-inline mb-0 py-2">
                 <li class="list-inline-item">
@@ -56,11 +55,11 @@
                     <i class="fa fa-2x fa-circle-notch text-primary-light"></i>
                   </p>
                   <h1 class="fw-bold mb-2">
-                    Sign In
+                    Connecter
                   </h1>
                   <p class="fw-medium text-muted">
-                    Welcome, please login  .
-                  </p>
+                    Bienvenue, veuillez vous connecter.
+                    </p>
                 </div>
                 <!-- END Header -->
 
@@ -78,13 +77,13 @@
                         <input type="password" class="form-control form-control-lg form-control-alt py-3" id="login-password" name="password" placeholder="Password">
                       </div>
                       <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
+                        {{-- <div>
                             @if (Route::has('password.request'))
                                     <a class="text-muted fs-sm fw-medium d-block d-lg-inline-block mb-1" href="{{ route('password.request') }}">
                                         {{ __('Forgot Your Password?') }}
                                     </a>
                             @endif
-                        </div>
+                        </div> --}}
                         <div>
                           <button type="submit" class="btn btn-lg btn-alt-primary">
                             <i class="fa fa-fw fa-sign-in-alt me-1 opacity-50"></i> Sign In

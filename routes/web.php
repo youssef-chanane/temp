@@ -20,13 +20,14 @@ Route::get('/', function () {
 });
 // Route::view('/auth', 'auth.register')->name('users.index');
 // Route::view('/users', 'users.index')->name('users.index');
-Route::view('/apartments', 'apartments.index')->name('apartments.index');
-Route::view('/apartments/create', 'apartments.create')->name('apartments.create');
-Route::view('/apartments/historic', 'apartments.historic')->name('apartments.historic');
-Route::view('/apartments/show', 'apartments.show')->name('apartments.show');
+// Route::view('/apartments', 'apartments.index')->name('apartments.index');
+// Route::view('/apartments/create', 'apartments.create')->name('apartments.create');
+Route::get('/apartements/historic/{id}', "App\Http\Controllers\ApartementController@historic")->name('apartements.historic');
+// Route::view('/apartements/show', 'apartements.show')->name('apartements.show');
 // Route::view('/users/create', 'users.create')->name('users.create');
-Route::resource('/users',"App\Http\Controllers\UserController");
-
+Route::resource('/users',"App\Http\Controllers\UserController")->middleware('auth');
+Route::resource('/apartements',"App\Http\Controllers\ApartementController")->middleware('auth');
+Route::put('/apartements/updateconsigne/{id}',[App\Http\Controllers\ApartementController::class, 'updateconsigne'])->name('apartements.updateconsigne');
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

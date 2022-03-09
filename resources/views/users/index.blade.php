@@ -32,19 +32,19 @@
       <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center py-2">
         <div class="flex-grow-1">
           <h1 class="h3 fw-bold mb-2">
-            DataTables Example
+            LISTE DES UTILISATEURS
           </h1>
-          <h2 class="fs-base lh-base fw-medium text-muted mb-0">
+          {{-- <h2 class="fs-base lh-base fw-medium text-muted mb-0">
             Plugin Integration
-          </h2>
+          </h2> --}}
         </div>
         <nav class="flex-shrink-0 mt-3 mt-sm-0 ms-sm-3" aria-label="breadcrumb">
           <ol class="breadcrumb breadcrumb-alt">
             <li class="breadcrumb-item">
-              <a class="link-fx" href="javascript:void(0)">Examples</a>
+              <a class="link-fx" href="javascript:void(0)">Utilisateur</a>
             </li>
             <li class="breadcrumb-item" aria-current="page">
-              DataTables
+              List
             </li>
           </ol>
         </nav>
@@ -84,46 +84,60 @@
             </tr>
           </thead>
           <tbody>
-            @for ($i = 1; $i < 21; $i++)
+            @foreach ( $users as $user )
+
               <tr>
-                <td class="text-center">{{ $i }}</td>
+                <td class="text-center">{{ $user->id }}</td>
                 <td class="fw-semibold">
-                  <a href="javascript:void(0)">John Doe</a>
+                  <a href="javascript:void(0)">{{ $user->name }}</a>
                 </td>
                 <td class="d-none d-sm-table-cell">
-                  client{{ $i }}<em class="text-muted">@example.com</em>
+                  {{ $user->email }}
                 </td>
                 <td>
+                    @if($user->deleted_at==NULL)
                     <span class="fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-success-light text-success">
                         <div class="flex-shrink-0">
                             <i class="fa fa-fw fa-check"></i>
                           </div>
                     </span>
+                    @else
+                    <span class="fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill bg-danger-light text-danger">
+                        <div class="flex-shrink-0">
+                            <i class="fa fa-fw fa-times"></i>
+                          </div>
+                    </span>
+                    @endif
                 </td>
                 <td>
-                    role {{$i}}
+                    {{$user->role}}
                 </td>
                 <td>
-                  <em class="text-muted">{{ rand(2, 10) }} days ago</em>
+                  <em class="text-muted">{{ ($user->created_at) ? $user->created_at->format('j-m-Y') : " " }}  </em>
                 </td>
                 <td>
-                    <em class="text-muted">{{ rand(2, 10) }} days left</em>
+                    <em class="text-muted">{{ ($user->created_at) ? date('j-m-Y', strtotime($user->disable_at)) : " "}} </em>
                 </td>
                 <td>
                 </td>
                 <td class="text-center">
                     <div class="btn-group">
 
-                        <a href="" class="btn btn-sm btn-alt-secondary js-bs-tooltip-enabled">
+                        <a href="{{route('users.edit',$user->id)}}" class="btn btn-sm btn-alt-secondary js-bs-tooltip-enabled">
                             <i class="fa fa-fw fa-pencil-alt"></i>
                         </a>
-                        <a href="" class="btn btn-sm btn-alt-secondary js-bs-tooltip-enabled">
-                            <i class="fa fa-fw fa-times"></i>
-                        </a>
+                        <form class="d-inline" action="{{route('users.destroy',$user->id
+                            )}}" method="POST" >
+                               @csrf
+                               @method('DELETE')
+                               <button href="" class="btn btn-sm btn-alt-secondary js-bs-tooltip-enabled">
+                                   <i class="fa fa-fw fa-times"></i>
+                               </button>
+                        </form>
                     </div>
                 </td>
               </tr>
-            @endfor
+            @endforeach
           </tbody>
         </table>
       </div>

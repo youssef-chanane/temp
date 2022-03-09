@@ -19,24 +19,20 @@
 <script src="{{asset('js/plugins/flatpickr/flatpickr.min.js')}}"></script>
 <script src="{{asset('js/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js')}}"></script>
 
-<script>
-    $(function(){
-      var tab=["table-active","table-primary","table-warning","table-danger","table-info","table-success"];
-      for(i=1;i<6;i++){
-          $(`#chambre${i}`).addClass(tab[i-1]);
-      }
-      $("#example-flatpickr-datetime").change(
-            function(){
-                console.log($(this).val());
-            }
-        );
-      console.log(tab[0]);
-
-  });
-</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.1/chart.min.js" integrity="sha512-QSkVNOCYLtj73J4hbmVoOV6KVZuMluZlioC+trLpewV8qMjsWqlIQvkn1KGX2StWvPMdWGBqim1xlC8krl1EKQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>{{-- <script src="{{asset('js/plugins/bootstrap-colorpicker/js/bootstrap-colorpicker.min.js')}}"></script> --}}
 <script>
+    $(
+        function(){
+            $("form").submit(
+                function(){
+                    console.log('hi');
+                    $("#datatab").removeClass("d-none");
+                    $("#datachart").removeClass("d-none");
+                }
+            );
+        }
+    );
     const ctx = document.getElementById('myChart');
     const myChart = new Chart(ctx, {
         type: 'line',
@@ -48,26 +44,7 @@
                 data: [10, 11, 12, 10, 9, 9],
                 borderColor: 'rgb(128,128,128)',
             },
-            {
-                label: 'chambre 2',
-                data: [18, 15, 13, 15, 14, 15],
-                borderColor: 'rgb(102, 102, 255)',
-            },
-            {
-                label: 'chambre 3',
-                data: [11, 8, 9, 14, 10, 16],
-                borderColor: 'rgb(251, 222, 206)',
-            },
-            {
-                label: 'chambre 4',
-                data: [13, 13, 15, 12, 15, 16],
-                borderColor: 'rgb(255, 0,0)',
-            },
-            {
-                label: 'chambre 5',
-                data: [8, 9, 7, 8, 10, 9],
-                borderColor: 'rgb(10,255,100)',
-            },
+
             ],
         },
         options: {
@@ -106,29 +83,30 @@
     <div class="col-12">
         <!-- Contextual Table -->
         <div class="block block-rounded">
-          <div class="block-header block-header-default">
-            <h3 class="block-title">la température des piéces de l'appartement</h3>
+            <div class="block-header block-header-default">
 
-          </div>
-          <div class="block-header block-header-default">
+                <form onsubmit="return false;" action="" class="col-12" method="POST">
+                  <div class="row ">
+                      <div class="col-6 col-lg-4">
+                        <label class="form-label" for="example-flatpickr-datetime">De</label>
+                        <input type="text" class="js-flatpickr form-control" data-max-date="today" id="start" name="example-flatpickr-datetime"  data-date-format="d-m-Y h:i" placeholder="d-m-Y h:i" data-enable-time="true">
+                      </div>
+                      <div class="col-3 mb-2">
+                        <label class="form-label" for="example-flatpickr-datetime">Vers</label>
+                        <input type="text" class="js-flatpickr form-control" data-max-date="today" id="end" name="example-flatpickr-datetime" placeholder="d-m-Y h:i" data-date-format="d-m-Y h:i" data-enable-time="true">
+                      </div>
+                      <div class="col-2">
+                        <button class="btn btn-primary mt-4" type="submit">Voir</button>
 
-            <form onsubmit="return false;" action="" class="col-12" method="POST">
-              <div class="row ">
-                  <div class="col-6 col-lg-4">
-                    <label class="form-label" for="example-flatpickr-datetime">Voir la température à l'instant</label>
-                    <input type="text" class="js-flatpickr form-control" data-max-date="today" id="example-flatpickr-datetime" name="example-flatpickr-datetime" placeholder="yyyy-mm-jj hh:mm" data-enable-time="true">
+                      </div>
                   </div>
-                  <div class="col-3 mb-2">
-                      <button class="btn btn-primary mt-4" type="submit">Voir</button>
-                  </div>
-              </div>
-            </form>
+                </form>
             </div>
-          <div class="p-2 table-responsive">
-            <table class="table table-borderless table-vcenter table-hover">
+          <div class=" col-12 p-2 table-responsive d-none" id="datatab">
+            <table class="table table-borderless table-vcenter table-hover table-striped ">
                 <thead>
                     <tr>
-                        <th>chambre</th>
+                        <th>date</th>
                         <th style="text-align: center">°C</th>
                         <th>consign a</th>
                         <th>consign b</th>
@@ -144,9 +122,9 @@
                   </thead>
               <tbody>
                 @for ($i = 1; $i < 6; $i++)
-                <tr id="chambre{{$i}}">
+                <tr id="chambre{{$i}}" >
                     <td>
-                        Chambre {{$i}}
+                        {{now()->format('Y-m-d')}} 0{{$i}}:00
                     </td>
                     <td style="text-align: center">{{$i}}°C</td>
                     <td>consign a</td>
@@ -168,7 +146,7 @@
 
         </div>
         <!-- END Contextual Table -->
-        <div class="col-12 m-auto">
+        <div class="col-12 m-auto d-none" id="datachart">
             <!-- Lines Chart -->
             <div class="block block-rounded">
               <div class="block-header block-header-default">
@@ -179,25 +157,6 @@
                   </button>
                 </div>
               </div>
-              <div class="block-header block-header-default">
-
-                <form onsubmit="return false;" action="" class="col-12" method="POST">
-                  <div class="row ">
-                      <div class="col-6 col-lg-4">
-                        <label class="form-label" for="example-flatpickr-datetime">De</label>
-                        <input type="text" class="js-flatpickr form-control" data-max-date="today" id="start" name="example-flatpickr-datetime" placeholder="yyyy-mm-jj hh:mm" data-enable-time="true">
-                      </div>
-                      <div class="col-3 mb-2">
-                        <label class="form-label" for="example-flatpickr-datetime">Vers</label>
-                        <input type="text" class="js-flatpickr form-control" data-max-date="today" id="end" name="example-flatpickr-datetime" placeholder="yyyy-mm-jj hh:mm" data-enable-time="true">
-                      </div>
-                      <div class="col-2">
-                        <button class="btn btn-primary mt-4" type="submit">Voir</button>
-
-                      </div>
-                  </div>
-                </form>
-            </div>
               <div class="block-content block-content-full text-center">
                 <div class="py-3">
                   <!-- Lines Chart Container -->
