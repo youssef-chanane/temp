@@ -87,9 +87,32 @@
 
                     </div>
                   </div>
+                  <div class="col-12 col-lg-6 ">
+                    <div class="mb-1">
+                      <input type="text" class="form-control" value="{{old('batiment') ?? NULL}}" name="batiment" placeholder="Bâtiment N°: ">
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 ">
+                    <div class="mb-1">
+                      <input type="text" class="form-control" value="{{old('escalier') ?? NULL}}" name="escalier" placeholder="Escalier ">
+                    </div>
+                  </div>
+                  <div class="col-12 col-lg-6 ">
+                    <div class="mb-1">
+                      <input type="text" class="form-control" value="{{old('etage') ?? NULL}}" name="etage" placeholder="Etage ">
+                    </div>
+                  </div>
+                    <div class="mb-1 col-12 col-lg-6">
+                      <select class="js-select2 form-select"   name="type" data-placeholder="Type">
+                        <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                          @for ( $i=1;$i<=10;$i++)
+                              <option value="F{{$i}}">F{{$i}}</option>
+                          @endfor
+                      </select>
+                    </div>
                   <div  class="col-12 col-lg-6">
                       <div>
-                        <div class="mb-1">
+                        <div class="mb-4">
                             <select class="js-select2 form-select" multiple="multiple" id="" name="number_name[]" style="width: 100%;" data-placeholder="les piéces de l'appartement.." multiple>
                             <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
                             <option value="cuisine" selected>Cuisine</option>
@@ -104,13 +127,14 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-12 col-lg-6 mb-1">
-                        <input type="text" class="form-control mb-4" value="{{old('company') ?? NULL}}" name="company" placeholder="Nom de l'entreprise">
-                        <input type="text" class="form-control" value="{{old('state') ?? NULL}}" name="state" placeholder="state">
 
-                    </div>
                     <div class="col-12 col-lg-6 mb-1">
                         <textarea class="form-control"  name="adress" rows="4" placeholder="Adresse..">{{old('adress') ?? NULL}}</textarea>
+                    </div>
+                    <div class="col-12 col-lg-6 mb-1">
+                        <input type="text" class="form-control mb-4" value="{{old('state') ?? NULL}}" name="state" placeholder="state">
+                        <input type="text" class="form-control " value="{{old('company') ?? NULL}}" name="company" placeholder="Nom de l'entreprise">
+
                     </div>
                     <div class="col-12 col-lg-6 mb-1">
                         <input type="text" class="form-control" value="{{old('poste') ?? NULL}}" name="poste" placeholder="Code postale">
@@ -131,13 +155,11 @@
                     <div class="col-12 col-lg-6 mb-1">
                         <input type="text" class="form-control"  name="logitude" value="{{old('logitude') ?? NULL}}" placeholder="Map Logitude">
                     </div>
-
                     <div class="col-12 col-lg-6 mb-1">
                         <input type="text" class="form-control"  name="latitude" value="{{old('latitude') ?? NULL}}" placeholder="Map Latitude">
                     </div>
                   <div  class="col-12 col-lg-6">
                       <h2 class="content-heading border-bottom  p-0">Choisir le viewer de l'appartement</h2>
-
                         <div >
                           <div class="mb-1">
                             <select class="js-select2 form-select" id="example-select2" name="viewer" style="width: 100%;" data-placeholder="Choisir une..">
@@ -204,7 +226,7 @@
                 @endif
                   <div class="col-12 mb-2">
                     <button class="btn btn-primary" type="submit">Enregistrer</button>
-                    <a href="{{route('apartements.index')}}" class="btn btn-light" >Cancel</a>
+                    <a href="{{url()->previous()}}" class="btn btn-light" >Cancel</a>
                   </div>
                 </form>
               </div>

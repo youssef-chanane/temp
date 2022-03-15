@@ -23,16 +23,18 @@ class ApartementController extends Controller
      */
     public function index()
     {
+        $this->authorize('admin.anyView');
         $user=Auth::id();
         // dd($user);
         $apartements=Apartement::whereHas('users',function($query) use ($user) {
             $query->where('users.id',$user);
         }
-        )->get();
+        )->with("adresse")->get();
         // $apartements=Apartement::with('rooms.temperature','users')->get();
         // dd($apartements);
         return view('apartements.index',[
             'apartements'=>$apartements
+            // 'users'=>User::get()
         ]);
     }
 
@@ -43,7 +45,8 @@ class ApartementController extends Controller
      */
     public function create()
     {
-
+        $this->authorize('admin.anyView');
+        // $this->authorize('create');
         $users=User::where('role','!=','super admin')->where('role','!=','super-admin')->get();
         $admins=$users->where('role','==','admin');
         $managers=$users->where('role','==','manager');
@@ -69,18 +72,24 @@ class ApartementController extends Controller
      */
     public function store(Request $request)
     {
-
+        // dd($request);
         $request->validate([
             "apartementName"=>"required|string|unique:apartements",
             "number_name"=>"required",
             "state"=>"required",
             "adress"=>"required",
-            "logitude"=>"required",
-            "latitude"=>"required",
             "ipBox"=>"required"
             ]);
             // dd($request->except('_token'));
-            $apartement=Apartement::create(["apartementName"=>$request->apartementName]);
+            $apartement=Apartement::create($request->only(
+                [
+                    'apartementName',
+                    'batiment',
+                    'escalier',
+                    'type',
+                    'etage'
+                ]
+            ));
             $adress=$request->only(['company',
             'adress',
             'poste',
@@ -117,7 +126,7 @@ class ApartementController extends Controller
                 }
             }
             // dd("done");
-            return redirect()->route('apartements.index');
+            return redirect()->route('home');
 
     }
 
@@ -127,8 +136,9 @@ class ApartementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id,Request $request)
-    {
+
+    public function show($id,Request $request){
+        // $userId=Auth::user()->id;
         // dd(User::whereId($id)->with('apartements')->get());
 
         // filtre sur la premiére tableau
@@ -138,14 +148,14 @@ class ApartementController extends Controller
             $week=Carbon::now()->subDays(42)->format('Y-m-d H:i');
             $filtre= Carbon::parse($request->filtre)->format('Y-m-d h:i');
             // dump($filtre);
-            $user=User::with(['apartements.rooms.temperature'=>function($query) use ($filtre){
+            $apartement=Apartement::with(['rooms.temperature'=>function($query) use ($filtre){
                 $query->where('Date_temperatures','<=',$filtre)->orderBy('Date_temperatures','desc');
             }
-            ,'apartements.rooms.temperatures',
-            'apartements.rooms.tempFiltre'=> function ($query) use ($now,$week) {
+            ,'rooms.temperatures',
+            'rooms.tempFiltre'=> function ($query) use ($now,$week) {
             $query->whereBetween('Date_temperatures',[$week,$now]);
         }])->find($id);
-            return view('apartements.show',['user'=>$user]);
+            return view('apartements.show',['apartement'=>$apartement]);
         }
 
         // filtre sur graph
@@ -154,32 +164,34 @@ class ApartementController extends Controller
             $start= Carbon::parse($request->start)->format('Y-m-d h:i');
             $end= Carbon::parse($request->end)->format('Y-m-d h:i');
             $now=Carbon::now()->format('Y-m-d H:i');
-            $user=User::with(['apartements.rooms.temperature'=>function($query) use ($now){
+            $apartement=Apartement::with(['rooms.temperature'=>function($query) use ($now){
                 $query->where('Date_temperatures','<=',$now)->orderBy('Date_temperatures','desc');
             }
-            ,'apartements.rooms.temperatures',
-            'apartements.rooms.tempFiltre'=> function ($query) use ($start,$end) {
+            ,'rooms.temperatures',
+            'rooms.tempFiltre'=> function ($query) use ($start,$end) {
                 $query->whereBetween('Date_temperatures',[$start,$end]);
             }
             ])->find($id);
-            return view('apartements.show',['user'=>$user]);
+            return view('apartements.show',['apartement'=>$apartement]);
 
         }
         // get Table and graph without filter
         $now=Carbon::now()->format('Y-m-d H:i');
         $week=Carbon::now()->subDays(10)->format('Y-m-d H:i');
-        $user=User::with(['apartements.rooms.temperature'=>function($query) use ($now){
-            $query->where('Date_temperatures','<=',$now)->orderBy('Date_temperatures','desc');
-        }
-        ,'apartements.rooms.temperatures',
-        'apartements.rooms.tempFiltre'=> function ($query) use ($week,$now) {
-            $query->whereBetween('Date_temperatures',[$week,$now]);
-        }
-    ])->find($id);
-        // dd($user);
-        return view('apartements.show',['user'=>$user]);
-    }
+        $apartement=Apartement::with(['rooms.temperature'=>function($query) use ($now,$id){
+                $query->where('Date_temperatures','<=',$now)->orderBy('Date_temperatures','desc');
+            }
+            ,'rooms.temperatures',
+            'rooms.tempFiltre'=> function ($query) use ($week,$now,$id) {
+                $query->whereBetween('Date_temperatures',[$week,$now]);
+            }
+        ])->find($id);
 
+            // dd($apartement);
+            return view('apartements.show',[
+                'apartement'=>$apartement
+            ]);
+    }
     /**
      * Show the form for editing the specified resource.
      *
@@ -222,7 +234,7 @@ class ApartementController extends Controller
         if($request->Consigne_A){
             Temperature::whereId($id)->update(array('Consigne_A' => $request->Consigne_A));
         }
-        return redirect()->route('apartements.index');
+        return redirect()->back();
     }
 
     /**

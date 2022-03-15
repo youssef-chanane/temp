@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
 
-  <title>Temperature</title>
+  <title>Wizinote</title>
 
   <meta name="description" content="OneUI - Bootstrap 5 Admin Template &amp; UI Framework created by pixelcave and published on Themeforest">
   <meta name="author" content="pixelcave">
@@ -22,10 +22,9 @@
   <!-- Fonts and Styles -->
   @yield('css_before')
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
-  <link rel="stylesheet" id="css-main" href="{{ mix('/css/oneui.css') }}">
+  <link rel="stylesheet" id="css-main" href="{{ asset('/css/oneui.css') }}">
 
   <!-- You can include a specific file from public/css/themes/ folder to alter the default color theme of the template. eg: -->
-  <!-- <link rel="stylesheet" id="css-theme" href="{{ mix('/css/themes/amethyst.css') }}"> -->
   @yield('css_after')
 
   <!-- Scripts -->
@@ -36,51 +35,6 @@
 
 <body>
   <!-- Page Container -->
-  <!--
-    Available classes for #page-container:
-
-    GENERIC
-
-      'remember-theme'                            Remembers active color theme and dark mode between pages using localStorage when set through
-                                                  - Theme helper buttons [data-toggle="theme"],
-                                                  - Layout helper buttons [data-toggle="layout" data-action="dark_mode_[on/off/toggle]"]
-                                                  - ..and/or One.layout('dark_mode_[on/off/toggle]')
-
-    SIDEBAR & SIDE OVERLAY
-
-      'sidebar-r'                                 Right Sidebar and left Side Overlay (default is left Sidebar and right Side Overlay)
-      'sidebar-mini'                              Mini hoverable Sidebar (screen width > 991px)
-      'sidebar-o'                                 Visible Sidebar by default (screen width > 991px)
-      'sidebar-o-xs'                              Visible Sidebar by default (screen width < 992px)
-      'sidebar-dark'                              Dark themed sidebar
-
-      'side-overlay-hover'                        Hoverable Side Overlay (screen width > 991px)
-      'side-overlay-o'                            Visible Side Overlay by default
-
-      'enable-page-overlay'                       Enables a visible clickable Page Overlay (closes Side Overlay on click) when Side Overlay opens
-
-      'side-scroll'                               Enables custom scrolling on Sidebar and Side Overlay instead of native scrolling (screen width > 991px)
-
-    HEADER
-
-      ''                                          Static Header if no class is added
-      'page-header-fixed'                         Fixed Header
-
-    HEADER STYLE
-
-      ''                                          Light themed Header
-      'page-header-dark'                          Dark themed Header
-
-    MAIN CONTENT LAYOUT
-
-      ''                                          Full width Main Content if no class is added
-      'main-content-boxed'                        Full width Main Content with a specific maximum width (screen width > 1200px)
-      'main-content-narrow'                       Full width Main Content with a percentage width (screen width > 1200px)
-
-    DARK MODE
-
-      'sidebar-dark page-header-dark dark-mode'   Enable dark mode (light sidebar/header is not supported with dark mode)
-    -->
   <div id="page-container" class="sidebar-o enable-page-overlay sidebar-dark side-scroll page-header-fixed main-content-narrow">
     <!-- Side Overlay-->
     <aside id="side-overlay" class="fs-sm">
@@ -131,9 +85,10 @@
     -->
     <nav id="sidebar" aria-label="Main Navigation">
       <!-- Side Header -->
-      <div class="content-header">
+      <div class="content-header p-0">
         <!-- Logo -->
         <a class="font-semibold text-dual" href="/">
+            <img src="{{asset('media/logo/logo.jpeg')}}" class="img-fluid ml-0" style="height: 75px;" alt="">
           <span class="smini-visible">
             <i class="fa fa-circle-notch text-primary"></i>
           </span>
@@ -162,23 +117,23 @@
                 <span>Default</span>
                 <i class="fa fa-circle text-default"></i>
               </a>
-              <a class="dropdown-item d-flex align-items-center justify-content-between font-medium" data-toggle="theme" data-theme="{{ mix('css/themes/amethyst.css') }}" href="#">
+              <a class="dropdown-item d-flex align-items-center justify-content-between font-medium" data-toggle="theme" data-theme="{{ asset('css/themes/amethyst.css') }}" href="#">
                 <span>Amethyst</span>
                 <i class="fa fa-circle text-amethyst"></i>
               </a>
-              <a class="dropdown-item d-flex align-items-center justify-content-between font-medium" data-toggle="theme" data-theme="{{ mix('css/themes/city.css') }}" href="#">
+              <a class="dropdown-item d-flex align-items-center justify-content-between font-medium" data-toggle="theme" data-theme="{{ asset('css/themes/city.css') }}" href="#">
                 <span>City</span>
                 <i class="fa fa-circle text-city"></i>
               </a>
-              <a class="dropdown-item d-flex align-items-center justify-content-between font-medium" data-toggle="theme" data-theme="{{ mix('css/themes/flat.css') }}" href="#">
+              <a class="dropdown-item d-flex align-items-center justify-content-between font-medium" data-toggle="theme" data-theme="{{ asset('css/themes/flat.css') }}" href="#">
                 <span>Flat</span>
                 <i class="fa fa-circle text-flat"></i>
               </a>
-              <a class="dropdown-item d-flex align-items-center justify-content-between font-medium" data-toggle="theme" data-theme="{{ mix('css/themes/modern.css') }}" href="#">
+              <a class="dropdown-item d-flex align-items-center justify-content-between font-medium" data-toggle="theme" data-theme="{{ asset('css/themes/modern.css') }}" href="#">
                 <span>Modern</span>
                 <i class="fa fa-circle text-modern"></i>
               </a>
-              <a class="dropdown-item d-flex align-items-center justify-content-between font-medium" data-toggle="theme" data-theme="{{ mix('css/themes/smooth.css') }}" href="#">
+              <a class="dropdown-item d-flex align-items-center justify-content-between font-medium" data-toggle="theme" data-theme="{{ asset('css/themes/smooth.css') }}" href="#">
                 <span>Smooth</span>
                 <i class="fa fa-circle text-smooth"></i>
               </a>
@@ -227,12 +182,7 @@
         <!-- Side Navigation -->
         <div class="content-side">
           <ul class="nav-main">
-            {{-- <li class="nav-main-item">
-              <a class="nav-main-link{{ request()->is('dashboard') ? ' active' : '' }}" href="{{route('home')}}">
-                <i class="nav-main-link-icon si si-cursor"></i>
-                <span class="nav-main-link-name">Dashboard</span>
-              </a>
-            </li> --}}
+
             @if(auth()->user()->role=="super admin" || auth()->user()->role=="admin")
             <li class="nav-main-item">
                 <a class="nav-main-link{{ request()->is('users.index') ? ' active' : '' }}" href="{{route('users.index')}}">
@@ -240,35 +190,61 @@
                   <span class="nav-main-link-name">Utilisateurs</span>
                 </a>
             </li>
-              <li class="nav-main-item">
-                <a class="nav-main-link" href="{{route('apartements.index')}}">
+            <li class="nav-main-item">
+                <a class="nav-main-link{{ request()->is('apartement.index') ? ' active' : '' }}" href="{{route('apartements.index')}}">
+                  <i class="nav-main-link-icon si si-cursor"></i>
+                  <span class="nav-main-link-name">Appartements</span>
+                </a>
+            </li>
+            <li class="nav-main-item">
+                <a class="nav-main-link{{ request()->is('apartements.index') ? ' active' : '' }}" href="{{route('apartements.create')}}">
+                    <i class="nav-main-link-icon si si-pencil"></i>
+                    <span class="nav-main-link-name">Ajouter Apartement</span>
+                </a>
+            </li>
+
+            @endif
+            <li class="nav-main-item open">
+                <a class="nav-main-link nav-main-link-submenu" data-toggle="submenu" aria-haspopup="true" aria-expanded="true" href="#">
                   <i class="nav-main-link-icon si si-bulb"></i>
                   <span class="nav-main-link-name">Exploitation</span>
                 </a>
-
-
-                @endif
-
-
+                <ul class="nav-main-submenu">
+                    @foreach ( auth()->user()->apartements as $apartement)
+                    <li>
+                      <a class="nav-main-link" href="{{route('apartements.show',$apartement->id)}}">
+                        {{-- <i class="nav-main-link-icon si si-bulb"></i> --}}
+                        <span class="nav-main-link-name">{{$apartement->apartementName}}</span>
+                      </a>
+                    </li>
+                @endforeach
                 </ul>
               </li>
-              @if(auth()->user()->role=="viewer")
+
+              {{-- @if(auth()->user()->role=="viewer")
                   <li class="nav-main-item">
                     <a class="nav-main-link" href="{{route('apartements.show',auth()->user()->id)}}">
                       <i class="nav-main-link-icon si si-bulb"></i>
                       <span class="nav-main-link-name">Exploitation</span>
                     </a>
                   </li>
-                @endif
-            {{-- <li class="nav-main-item open">
-                <form action="{{route('logout')}}" class="nav-main-link" method="post">
-                 @csrf
-                 <button class="btn">
-                   <i class="nav-main-link-icon si si-logout"></i>
-                   <span class="nav-main-link-name" style="color: #9faec1">Logout</span>
-                 </button>
-                </form>
-            </li> --}}
+                  @else
+                  <li class="nav-main-item">
+                    <span class="nav-main-link">
+                      <i class="nav-main-link-icon si si-bulb"></i>
+                      <span class="nav-main-link-name">Exploitation</span>
+                    </span>
+                  </li>
+                  @foreach ( auth()->user()->apartements as $apartement)
+                    <li>
+                      <a class="nav-main-link" href="{{route('apartements.chart',$apartement->id)}}">
+                        <i class="nav-main-link-icon si si-bulb"></i>
+                        <span class="nav-main-link-name">{{$apartement->apartementName}}</span>
+                      </a>
+                    </li>
+                @endforeach
+                @endif --}}
+
           </ul>
         </div>
         <!-- END Side Navigation -->
@@ -346,9 +322,9 @@
             </div> --}}
             <div role="separator" class="dropdown-divider m-0"></div>
             <div class="p-2">
-              <a class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0)">
+              {{-- <a class="dropdown-item d-flex align-items-center justify-content-between" href="javascript:void(0)">
                 <span class="fs-sm fw-medium">réglages</span>
-              </a>
+              </a> --}}
               <form class="dropdown-item d-flex align-items-center justify-content-between " action="{{route('logout')}}" method="post">
                 @csrf
                 <button class="btn btn-sm btn-alt-secondary d-flex align-items-center">Déconnecter</button>
@@ -398,10 +374,9 @@
   <!-- END Page Container -->
 
   <!-- OneUI Core JS -->
-  <script src="{{ mix('js/oneui.app.js') }}"></script>
+  <script src="{{ asset('js/oneui.app.js') }}"></script>
 
   <!-- Laravel Scaffolding JS -->
-  <!-- <script src="{{ mix('/js/laravel.app.js') }}"></script> -->
 
   @yield('js_after')
 </body>

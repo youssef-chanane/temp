@@ -43,9 +43,28 @@
     // console.log()
     const ctx = document.getElementById('myChart');
     const ctx1 = document.getElementById('myChart1');
-    const rooms = @json($user->apartements[0]->rooms);
-    console.log(rooms);
-    // var temp1 = rooms[0].temperatures;
+    const rooms = @json($apartement->rooms);
+    const selectRoom=document.getElementById('selectChambre');
+    console.log(selectRoom.options[selectRoom.selectedIndex].value);
+    let roomId = rooms[0].id;
+    let room = rooms[0];
+    console.log(room);
+    $( document ).ready(function() {
+        console.log( "ready!" );
+        document.getElementById(`roomHisto${roomId}`).classList.remove('d-none');
+
+    });
+    selectRoom.onchange=function(){
+        // roomId=selectRoom.value;
+        rooms.forEach((elm)=>{
+            if(selectRoom.value==elm.id){
+                document.getElementById(`roomHisto${elm.id}`).classList.remove('d-none');
+            }else{
+                document.getElementById(`roomHisto${elm.id}`).classList.add('d-none');
+            }
+        })
+        console.log(room);
+    }
 
 
 
@@ -63,13 +82,13 @@
     if((start-end) < 86400000 ){
         x1= 'hour';
         x2=6;
-    }else if((start-end)< 2592000000 ){
+    }else if((start-end)< 3592000000 ){
         x1="day";
-        x2=144;
+        x2=20;
     }else
     {
         x1 = "month";
-        x2=432;
+        x2=40;
     }
     // console.log(Date.parse(rooms[0].temp_filtre[0].Date_temperatures)-Date.parse(rooms[0].temp_filtre[len-1].Date_temperatures));
     let chart = new Chart(ctx, {
@@ -81,6 +100,7 @@
                     fill: false,
                      borderColor: tab1[i],
                     label: elem.number_name,
+                    tension: 0.1,
 
                     data:elem.temp_filtre.map(element => ({
                             x: element.Date_temperatures,
@@ -97,9 +117,12 @@
         scales: {
             y: {
                 display: true,
+                title: {
+                    display:true,
+                    text:"Température °C"},
 
-        suggestedMin: 14,
-        suggestedMax: 20
+                suggestedMin: 14,
+                suggestedMax: 20
       },
       xAxis: {
                 type: 'time',
@@ -117,7 +140,16 @@
                         radius: 0
                     },
                     responsive: true,
-                }
+                },
+                plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Cliquez sur une appartement pour masquer sa courbe'
+      }
+    }
     }
 }
 );
@@ -131,6 +163,7 @@ let data1 = []
 
 
 let chart3=[];
+
 rooms.forEach((element,i) => {
     data1[element.id]=  {
 //   labels: ['lunid','mardi','mercredi'],
@@ -154,6 +187,11 @@ rooms.forEach((element,i) => {
   options: {
         responsive: true,
         scales: {
+            y:{
+                title: {
+                    display:true,
+                    text:"Kwh"}
+            },
       xAxis: {
                 // id:"a",
                 type: 'time',
@@ -181,17 +219,6 @@ rooms.forEach((element,i) => {
 
     </script>
 
-{{-- <script src="{{asset('js/plugins/bootstrap-maxlength/bootstrap-maxlength.min.js')}}"></script> --}}
-{{-- <script src="{{asset('js/plugins/select2/js/select2.full.min.js')}}"></script> --}}
-{{-- <script src="{{asset('js/plugins/jquery.maskedinput/jquery.maskedinput.min.js')}}"></script> --}}
-{{-- <script src="{{asset('js/plugins/ion-rangeslider/js/ion.rangeSlider.min.js')}}"></script> --}}
-{{-- <script src="{{asset('js/plugins/dropzone/min/dropzone.min.js')}}"></script> --}}
-
-
-{{-- js validation --}}
-{{-- <script src="{{asset('js/plugins/jquery-validation/jquery.validate.min.js')}}"></script>
-<script src="{{asset('js/plugins/jquery-validation/additional-methods.js')}}"></script>
-<script src="{{asset('js/pages/be_forms_validation.min.js')}}"></script> --}}
 
 
 <!-- Page JS Helpers (Flatpickr + BS Datepicker + BS Maxlength + Select2 + Masked Inputs + Ion Range Slider + BS Colorpicker plugins) -->
@@ -199,7 +226,22 @@ rooms.forEach((element,i) => {
 @endsection
 
 @section('content')
-
+<!-- Hero -->
+<div class="bg-body-light">
+    <div class="content content-full">
+      <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center py-2">
+        <div class="flex-grow-1">
+          <h1 class="h3 fw-bold mb-2">
+            {{$apartement->apartementName}}
+          </h1>
+          {{-- <h2 class="fs-base lh-base fw-medium text-muted mb-0">
+            Plugin Integration
+          </h2> --}}
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END Hero -->
         <!-- Page Content -->
     <div class="content">
     <!-- Dynamic Table Full -->
@@ -213,7 +255,7 @@ rooms.forEach((element,i) => {
           </div>
           <div class="block-header block-header-default">
 
-            <form  action="" class="col-12" method="GET">
+            <form  action="{{route('apartements.show',$apartement->id)}}" class="col-12" method="GET">
                 @csrf
               <div class="row ">
                   <div class="col-6 col-lg-4">
@@ -230,6 +272,9 @@ rooms.forEach((element,i) => {
             <table class="table table-borderless table-vcenter table-hover">
                 <thead>
                     <tr>
+                        @if(auth()->user()->role=="super admin" || auth()->user()->role=="admin")
+                            <th>#</th>
+                        @endif
                         <th>chambre</th>
                         <th style="text-align: center">°C</th>
                         <th>consign a</th>
@@ -245,10 +290,12 @@ rooms.forEach((element,i) => {
                     </tr>
                   </thead>
               <tbody>
-                @foreach ($user->apartements as $apartement)
                 <div class="d-none"> {{$i=1}}</div>
                 @foreach ($apartement->rooms as $room)
                 <tr id="chambre{{$i}}">
+                    @if(auth()->user()->role=="super admin" || auth()->user()->role=="admin")
+                            <th>{{$room->id}}</th>
+                        @endif
                     <td>
 
                         {{$room->number_name}}
@@ -256,11 +303,20 @@ rooms.forEach((element,i) => {
                     <td style="text-align: center"> {{($room->temperature)?$room->temperature->Temperature_Values:""}}°C</td>
                     <td>
                         {{($room->temperature)?$room->temperature->Consigne_A:""}}
-
+                        @if($room->temperature)
+                        <button  class="btn btn-sm btn-alt-secondary "  data-bs-toggle="modal" data-bs-target="#modal-block-small{{$room->temperature->id}}">
+                            <i class="fa fa-fw fa-pencil-alt"></i>
+                        </button>
+                        @endif
                     </td>
                     <td>
                         {{($room->temperature)?$room->temperature->Consigne_B:""}}
+                        @if($room->temperature)
 
+                        <button  class="btn btn-sm btn-alt-secondary "  data-bs-toggle="modal" data-bs-target="#modal-block-small2{{$room->temperature->id}}">
+                            <i class="fa fa-fw fa-pencil-alt"></i>
+                        </button>
+                        @endif
                     </td>
                     <td>
                         {{($room->temperature)?$room->temperature->Fin_Manuel:""}}
@@ -290,7 +346,68 @@ rooms.forEach((element,i) => {
                 <div class="d-none">
                     {{$i++}}
                 </div>
-                @endforeach
+                         {{-- for consign 1 --}}
+  <!-- Small Block Modal -->
+  @if($room->temperature)
+  <div class="modal" id="modal-block-small{{$room->temperature->id}}" tabindex="-1" role="dialog" aria-labelledby="modal-block-small" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+      <div class="modal-content">
+        <div class="block block-rounded block-transparent mb-0">
+          <div class="block-header block-header-default">
+            <h3 class="block-title">Modifier consigne 1</h3>
+            <div class="block-options">
+              <button type="button" class="btn-block-option" data-bs-dismiss="modal" aria-label="Close">
+                <i class="fa fa-fw fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <form action="{{route('apartements.updateconsigne',$room->temperature->id)}}" method="POST">
+            @csrf
+            @method('PUT')
+              <div class="block-content fs-sm mb-4">
+                <textarea class="form-control " id="" name="Consigne_A" placeholder="Nouveau Consigne">{{old('Consigne_A',isset($room->temperature->Consigne_A) ? $room->temperature->Consigne_A:'') ?? NULL}}</textarea>
+              </div>
+              <div class="block-content block-content-full text-end bg-body">
+                <button type="button" class="btn btn-sm btn-alt-secondary me-1" data-bs-dismiss="modal">Fermer</button>
+                <button type="submit" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Enregistrer</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END Small Block Modal -->
+  {{-- for consign 2 --}}
+    <!-- Small Block Modal -->
+    <div class="modal" id="modal-block-small2{{$room->temperature->id}}" tabindex="-1" role="dialog" aria-labelledby="modal-block-small2" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+          <div class="modal-content">
+            <div class="block block-rounded block-transparent mb-0">
+              <div class="block-header block-header-default">
+                <h3 class="block-title">Modifier consigne 2</h3>
+                <div class="block-options">
+                  <button type="button" class="btn-block-option" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-fw fa-times"></i>
+                  </button>
+                </div>
+              </div>
+              <form action="{{route('apartements.updateconsigne',$room->temperature->id)}}" method="POST">
+                @csrf
+                @method('PUT')
+                  <div class="block-content fs-sm mb-4">
+                    <textarea class="form-control " id="" name="Consigne_B"  placeholder="Nouveau Consigne">{{old('Consigne_B',isset($room->temperature->Consigne_B) ? $room->temperature->Consigne_B:'') ?? NULL}}</textarea>
+                  </div>
+                  <div class="block-content block-content-full text-end bg-body">
+                    <button type="button" class="btn btn-sm btn-alt-secondary me-1" data-bs-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-sm btn-primary" data-bs-dismiss="modal">Enregistrer</button>
+                  </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      @endif
+      <!-- END Small Block Modal -->
                 @endforeach
 
               </tbody>
@@ -305,7 +422,7 @@ rooms.forEach((element,i) => {
             <!-- Lines Chart -->
             <div class="block block-rounded">
               <div class="block-header block-header-default">
-                <h3 class="block-title">Lines</h3>
+                <h3 class="block-title">Choix du temps du Graphique</h3>
                 <div class="block-options">
                   <button type="button" class="btn-block-option" data-toggle="block-option" data-action="state_toggle" data-action-mode="demo">
                     <i class="si si-refresh"></i>
@@ -314,7 +431,7 @@ rooms.forEach((element,i) => {
               </div>
               <div class="block-header block-header-default">
 
-                <form  action="" class="col-12" method="GET">
+                <form  action="{{route('apartements.show',$apartement->id)}}" class="col-12" method="GET">
                     @csrf
                   <div class="row ">
                       <div class="col-6 col-lg-4">
@@ -337,19 +454,27 @@ rooms.forEach((element,i) => {
                   <!-- Lines Chart Container -->
                   <canvas id="myChart" width="400" height="200"></canvas>
                 </div>
-                {{-- <div class="py-3">
-                    <!-- Bar Chart Container -->
-                    <canvas id="myChart1" width="400" height="200"></canvas>
-                  </div> --}}
-                @foreach ($user->apartements as $apartement)
+
+                <div class="block-header block-header-default">
+                    <div class="col-6">
+                        <label for="">Choisissez une pièce pour visualisez son histogramme :</label>
+                    </div>
+                    <div class="col-6">
+                        <select class="js-select2 form-select" id="selectChambre" name="chambreHisto" data-placeholder="Choisir une..">
+                              <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
+                              @foreach ($apartement->rooms as $room)
+                                  <option value="{{$room->id}}">{{$room->number_name}}</option>
+                              @endforeach
+                        </select>
+                    </div>
+                    </div>
                     @foreach ($apartement->rooms as $room)
-                        <div class="py-3">
+                        <div class="py-3 d-none" id="roomHisto{{$room->id}}">
                         <!-- Bar Chart Container -->
                         {{-- {{$room->id}} --}}
                         <canvas id="histo{{$room->id}}" width="400" height="200"></canvas>
                       </div>
                     @endforeach
-                @endforeach
               </div>
             </div>
             <!-- END Lines Chart -->

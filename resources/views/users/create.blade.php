@@ -113,63 +113,6 @@
     <div class="content">
               <!-- Vertical Block Tabs Default Style -->
               <div class="block block-rounded row g-0">
-
-                <div class="tab-content col-md-12">
-
-                  {{-- <div class="block-content tab-pane" id="btabs-vertical-profile" role="tabpanel" aria-labelledby="btabs-vertical-profile-tab">
-                    <div class="block block-rounded">
-                        <div class="block-header block-header-default">
-                          <h3 class="block-title">AJOUTER L'ADRESSE DE L'UTILISATEUR</h3>
-                        </div>
-                        <div class="block-content">
-                          <form class="row g-3 needs-validation" novalidate onsubmit="return false;">
-                            @csrf
-                            <div class="col-12 mb-2">
-                                <label class="form-label" for="">Nom de l'entreprise</label>
-                                <input type="text" class="form-control"  name="" placeholder="Nom de l'entreprise">
-                            </div>
-                            <div class="col-12 mb-2">
-                                <label class="form-label" for="">Adresse</label>
-                                <textarea class="form-control"  name="" rows="4" placeholder="Adresse.."></textarea>
-                            </div>
-                            <div class="col-12 col-lg-6 mb-2">
-                                <label class="form-label" for="">Code postale</label>
-                                <input type="text" class="form-control"  name="" placeholder="Code postale">
-                            </div>
-                            <div class="col-12 col-lg-6 mb-2">
-                                <label class="form-label" for="">state</label>
-                                <input type="text" class="form-control"  name="" placeholder="state">
-                            </div>
-
-                            <div class="col-12 col-lg-6 mb-2">
-                                <label class="form-label" for="">Tel </label>
-                                <input type="text" class="form-control"  name="" placeholder="Tel ">
-                            </div>
-
-                            <div class="col-12 col-lg-6 mb-2">
-                                <label class="form-label" for="">Tel 2</label>
-                                <input type="text" class="form-control"  name="" placeholder="Tel ">
-                            </div>
-
-                            <div class="col-12 col-lg-6 mb-2">
-                                <label class="form-label" for="">Map Logitude</label>
-                                <input type="text" class="form-control"  name="" placeholder="Map ">
-                            </div>
-
-                            <div class="col-12 col-lg-6 mb-2">
-                                <label class="form-label" for="">Map Latitude</label>
-                                <input type="text" class="form-control"  name="" placeholder="Map ">
-                            </div>
-                            <div class="col-12 2">
-                              <button class="btn btn-primary" type="submit">Enregistrer</button>
-                              <a href="{{route('users.index')}}" class="btn btn-light" >Cancel</a>
-
-                            </div>
-                          </form>
-                        </div>
-                      </div> --}}
-                      <!-- END Flatpickr Datetimepicker -->
-                  </div>
                   <div class="block-content tab-pane active" id="btabs-vertical-home" role="tabpanel" aria-labelledby="btabs-vertical-home-tab">
                     <div class="block block-rounded">
                         <div class="block-header block-header-default">
@@ -181,7 +124,7 @@
                             <div class="col-12 col-lg-6 mb-1">
                               <div class="">
                                 <label class="form-label" for="val-username">nom d'utilisateur  <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="val-username" name="name" placeholder="Entrer un  nom d'utilisateur.." >
+                                <input type="text" class="form-control" id="val-username"  value="{{old('name') ?? NULL}}" name="name" placeholder="Entrer un  nom d'utilisateur.." >
 
                               </div>
                             </div>
@@ -193,7 +136,7 @@
                               </label>
                               <div class="input-group has-validation">
                                 <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                <input type="email" class="form-control" name="email" placeholder="Entrer un Email" aria-describedby="inputGroupPrepend" >
+                                <input type="email" class="form-control"  value="{{old('email') ?? NULL}}"  name="email" placeholder="Entrer un Email" aria-describedby="inputGroupPrepend" >
 
                               </div>
                             </div>
@@ -220,7 +163,7 @@
 
                             <div class="col-12 mb-1">
                               <label for="role" class="form-label">Privilége <span class="text-danger">*</span></label>
-                              <select class="form-select" name="role" id="role" >
+                              <select class="form-select" name="role"  value="{{old('role') ?? NULL}}"  id="role" >
                                 <option selected disabled value="">...</option>
                                 @if(auth()->user()->role=="super admin")
                                 <option value="admin">admin</option>
@@ -236,10 +179,10 @@
 
                                   <div class="col-12 ">
                                     <div class="mb-1">
-                                      <select class="js-select2 form-select" name="apartementsViewer" style="width: 100%;" data-placeholder="Choisir une..">
+                                      <select class="js-select2 form-select"  name="apartementsViewer" style="width: 100%;" data-placeholder="Choisir une..">
                                         <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
                                         @foreach ($apartementsViewer as $apartement)
-                                          <option value="{{$apartement->id}}">{{$apartement->name}}</option>
+                                          <option value="{{$apartement->id}}">{{$apartement->apartementName}}</option>
                                         @endforeach
                                       </select>
                                     </div>
@@ -253,7 +196,7 @@
                                   <select class="js-select2 form-select" name="apartementsAdmin[]" style="width: 100%;" data-placeholder="choisir plusieur.." multiple>
                                     <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
                                     @foreach ($apartementsAdmin as $apartement)
-                                          <option value="{{$apartement->id}}">{{$apartement->name}}</option>
+                                          <option value="{{$apartement->id}}">{{$apartement->apartementName}}</option>
                                     @endforeach
                                   </select>
                                 </div>
@@ -267,7 +210,7 @@
                                       <select class="js-select2 form-select"  name="apartementsManager[]" style="width: 100%;" data-placeholder="choisir plusieur.." multiple>
                                         <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
                                         @foreach ($apartementsManager as $apartement)
-                                              <option value="{{$apartement->id}}">{{$apartement->name}}</option>
+                                              <option value="{{$apartement->id}}">{{$apartement->apartementName}}</option>
                                         @endforeach
                                       </select>
                                     </div>
@@ -281,7 +224,7 @@
                                           <select class="js-select2 form-select" name="apartementsTechnicien[]" style="width: 100%;" data-placeholder="choisir plusieur.." multiple>
                                             <option></option><!-- Required for data-placeholder attribute to work with Select2 plugin -->
                                             @foreach ($apartementsTechnicien as $apartement)
-                                                  <option value="{{$apartement->id}}">{{$apartement->name}}</option>
+                                                  <option value="{{$apartement->id}}">{{$apartement->apartementName}}</option>
                                             @endforeach
                                           </select>
                                         </div>
@@ -290,33 +233,33 @@
                                     <h2 class="content-heading border-bottom mb-1">Définir l'adresse d'utilisateur</h2>
 
                                     <div class="col-12 col-lg-6 mb-1">
-                                        <input type="text" class="form-control mb-4" id="" name="company" placeholder="Nom de l'entreprise">
-                                        <input type="text" class="form-control" id="" name="state" placeholder="state">
+                                        <input type="text" class="form-control mb-4" name="company" {{old('company') ?? NULL}} placeholder="Nom de l'entreprise">
+                                        <input type="text" class="form-control" name="state" {{old('state') ?? NULL}} placeholder="state">
 
                                     </div>
                                     <div class="col-12 col-lg-6 mb-1">
-                                        <textarea class="form-control" id="" name="adress" rows="4" placeholder="Adresse.."></textarea>
+                                        <textarea class="form-control" name="adress"    rows="4" placeholder="Adresse.."> {{old('adress') ?? NULL}}</textarea>
                                     </div>
                                     <div class="col-12 col-lg-4 mb-1">
-                                        <input type="text" class="form-control" id="" name="poste" placeholder="Code postale">
+                                        <input type="text" class="form-control" name="poste"  value="{{old('poste') ?? NULL}}"  placeholder="Code postale">
 
                                     </div>
 
 
                                     <div class="col-12 col-lg-4 mb-1">
-                                        <input type="text" class="form-control" id="" name="tel" placeholder="Tel ">
-                                    </div>
-
-                                    <div class="col-12 col-lg-4 mb-1">
-                                        <input type="text" class="form-control" id="" name="tel1" placeholder="Tel 2">
+                                        <input type="text" class="form-control" name="tel"  value="{{old('tel') ?? NULL}}"  placeholder="Tel ">
                                     </div>
 
                                     <div class="col-12 col-lg-4 mb-1">
-                                        <input type="text" class="form-control" id="" name="logitude" placeholder="Map Logitude">
+                                        <input type="text" class="form-control" name="tel1"  value="{{old('tel1') ?? NULL}}"  placeholder="Tel 2">
                                     </div>
 
                                     <div class="col-12 col-lg-4 mb-1">
-                                        <input type="text" class="form-control" id="" name="latitude" placeholder="Map Latitude">
+                                        <input type="text" class="form-control" name="logitude"  value="{{old('logitude') ?? NULL}}"  placeholder="Map Logitude">
+                                    </div>
+
+                                    <div class="col-12 col-lg-4 mb-1">
+                                        <input type="text" class="form-control" name="latitude"  value="{{old('latitude') ?? NULL}}"  placeholder="Map Latitude">
                                     </div>
                                     @if($errors->any())
                                     <div class="alert alert-danger">

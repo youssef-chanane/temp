@@ -10,7 +10,11 @@ class Apartement extends Model
     use HasFactory;
 
     protected $fillable = [
-        'apartementName'
+        'apartementName',
+        'batiment',
+        'escalier',
+        'type',
+        'etage'
     ];
     // public function temperatures()
     // {

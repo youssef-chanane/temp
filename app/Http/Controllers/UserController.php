@@ -20,6 +20,8 @@ class UserController extends Controller
     public function index()
     {
         $user=Auth::user();
+        // $this->authorize('viewAny',$user);
+        $this->authorize('admin.anyView');
         if($user->role=="super admin" || $user->role == "super-admin"){
             $users=User::withTrashed()->where('role','!=','super admin')->where('role','!=','super-admin')->get();
         }else{
@@ -38,6 +40,9 @@ class UserController extends Controller
      */
     public function create()
     {
+        // $this->authorize('viewAny',Auth::user());
+        $this->authorize('admin.anyView');
+
         $apartementsViewer=Apartement::whereDoesntHave('users',function($query) {
             $query->where('role','viewer');
         }
@@ -69,6 +74,9 @@ class UserController extends Controller
     public function store(Request $request)
     {
         // dd($request);
+        // $this->authorize('viewAny',Auth::user());
+        $this->authorize('admin.anyView');
+
         $request->validate([
             "name"=>"required|string",
             "email"=>"required|string|unique:users",
@@ -85,13 +93,13 @@ class UserController extends Controller
             UserApartement::create(["user_id"=>$user->id,"apartement_id"=>$request->apartementsViewer]);
         }
         if($request->apartementsAdmin){
-                foreach((array) $request->appartement as $apartement){
+                foreach((array) $request->apartementsAdmin as $apartement){
                     UserApartement::create(["user_id"=>$user->id,"apartement_id"=>$apartement]);
                 }
 
         }
         if($request->apartementsManager){
-            foreach((array) $request->appartement as $apartement){
+            foreach((array) $request->apartementsManager as $apartement){
                 UserApartement::create(["user_id"=>$user->id,"apartement_id"=>$apartement]);
             }
         }
@@ -133,10 +141,39 @@ class UserController extends Controller
      */
     public function edit($id)
     {
+        // $this->authorize('viewAny',Auth::user());
+        $this->authorize('admin.anyView');
 
-        $user=User::find($id);
+
+        $user=User::with('personal','apartements')->find($id);
+        if($user->role=='viewer'){
+            $apartements=Apartement::whereDoesntHave('users',function($query) {
+                $query->where('role','viewer');
+            }
+            )->get();
+        }
+        if($user->role=='admin'){
+            $apartements=Apartement::whereDoesntHave('users',function($query) {
+                $query->where('role','admin');
+            }
+            )->get();
+        }
+        if($user->role=='manager'){
+            $apartements=Apartement::whereDoesntHave('users',function($query) {
+                $query->where('role','manager');
+            }
+            )->get();
+        }
+        if($user->role=='technicien'){
+            $apartements=Apartement::whereDoesntHave('users',function($query) use($user) {
+                $query->where('users.id',$user->id);
+            }
+            )->get();
+        }
+        // dd($user);
         return view('users.edit',[
-            'user'=>$user
+            'user'=>$user,
+            'apartements'=>$apartements
         ]
 
         );
@@ -151,14 +188,30 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $this->authorize('admin.anyView');
+        // dump($request);
+        $user=User::find($id);
         $request->validate([
             "name"=>"required|string",
-            "email"=>"required|string",
+            "email"=>"required|string|unique:users,email,$id",
             "disable_at"=>"required",
             ]);
-        $data=$request->except(['_method','_token']);
-        // dd($data);
-        User::whereId($id)->update($data);
+        $data=$request->only(['name','email','disable_at']);
+        if($request->password){
+            $data['password']=Hash::make($request['password']);
+        }
+        //adresse
+        $adresse=$request->only(['company',
+        'adress',
+        'poste',
+        'state',
+        'tel',
+        'tel1',
+        'logitude',
+        'latitude']);
+        $user->update($data);
+        $user->apartements()->sync($request->apartements);
+        $user->personal()->update($adresse);
         return redirect()->route('users.index');
     }
 
@@ -170,6 +223,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('admin.anyView');
         User::destroy($id);
         return redirect()->back();
     }
